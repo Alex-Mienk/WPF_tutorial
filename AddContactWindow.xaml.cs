@@ -19,23 +19,29 @@ namespace Tutorial
     /// </summary>
     public partial class AddContactWindow : Window
     {
+        // The main window reads this property after the dialog returns true.
         public Contact NewContact { get; private set; }
 
         public AddContactWindow()
         {
+            // Loads the visual tree from AddContactWindow.xaml.
             InitializeComponent();
+            // The form edits this object directly through bindings.
             NewContact = new Contact();
+            // Allows TextBox and ComboBox bindings to resolve against NewContact.
             DataContext = NewContact;
         }
 
         private void AddContact(object sender, RoutedEventArgs e)
         {
+            // true tells ShowDialog callers that the user confirmed the form.
             DialogResult = true;
             Close();
         }
 
         private void Cancel(object sender, RoutedEventArgs e)
         {
+            // false tells ShowDialog callers to ignore the current NewContact value.
             DialogResult = false;
             Close();
         }

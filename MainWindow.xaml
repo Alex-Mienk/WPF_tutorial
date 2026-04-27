@@ -1,4 +1,7 @@
-﻿<Window x:Class="Tutorial.MainWindow"
+﻿<!-- Main application window. x:Class connects this XAML file to MainWindow.xaml.cs. -->
+<!-- xmlns is the default WPF controls namespace; x:, d:, mc:, and local: add XAML, designer, compatibility, and app-specific features. -->
+<!-- WindowStartupLocation can also be Manual, CenterOwner, or WindowsDefaultLocation. -->
+<Window x:Class="Tutorial.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,23 +10,32 @@
         mc:Ignorable="d"
         Title="Hello from WPF" Height="600" Width="800" WindowStartupLocation="CenterScreen" MinHeight="500" MinWidth="500">
   <Window.Resources>
+    <!-- Reusable image resources selected later by gender triggers. -->
     <BitmapImage x:Key="WomanAvatar" UriSource="/woman.png" />
     <BitmapImage x:Key="ManAvatar" UriSource="/man.png" />
+    <!-- Template controls how each contact appears in the ListBox. -->
     <DataTemplate x:Key="ContactListItemTemplate" DataType="ListBoxItem" >
       <Grid HorizontalAlignment="Stretch">
         <Grid.ColumnDefinitions>
+          <!-- "*" takes remaining space; Auto sizes to the content. Fixed pixel values are also possible. -->
           <ColumnDefinition Width="*" />
           <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
+        <!-- Horizontal stack keeps first name and surname on one line. Orientation can also be Vertical. -->
         <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+          <!-- Content bindings read Name and Surname from the current Contact item. -->
           <Label Content="{Binding Name}" FontSize="20" Padding="3,0,0,0" />
           <Label Content="{Binding Surname}" FontSize="20" Padding="3,0,0,0" />
         </StackPanel>
+        <!-- Avatar frame. BorderThickness accepts one value, four values, or side-specific values. -->
         <Border Grid.Column="2" VerticalAlignment="Center" Width="50" Height="50" BorderBrush="Black" BorderThickness="1" Margin="3">
+          <!-- Stretch options include None, Fill, Uniform, and UniformToFill. -->
           <Image Stretch="Fill">
             <Image.Style>
+              <!-- Style applies trigger-based Source changes to this Image. -->
               <Style TargetType="{x:Type Image}">
                 <Style.Triggers>
+                  <!-- DataTrigger swaps the image when the bound Gender matches the given enum text. -->
                   <DataTrigger Binding="{Binding Gender}" Value="Female">
                     <Setter Property="Source" Value="{StaticResource WomanAvatar}" />
                   </DataTrigger>
@@ -37,9 +49,12 @@
         </Border>
       </Grid>
     </DataTemplate>
+    <!-- View source wraps the DataContext collection; useful for filtering, sorting, or grouping later. -->
     <CollectionViewSource Source="{Binding}" x:Key="ContactsViewSource" />
+    <!-- Item container style affects the generated ListBoxItem around each data object. -->
     <Style x:Key="ContactListItemStyle" TargetType="ListBoxItem">
       <Style.Triggers>
+        <!-- AlternationIndex depends on the ListBox AlternationCount value below. -->
         <Trigger Property="ItemsControl.AlternationIndex" Value="0">
           <Setter Property="Background" Value="#FFAFC5FF" />
         </Trigger>
@@ -51,11 +66,14 @@
   </Window.Resources>
   <Grid>
     <Grid.RowDefinitions>
+      <!-- Auto sizes to the menu; * gives the remaining height to the tabs. -->
       <RowDefinition Height="Auto" />
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
+    <!-- MenuItem Click attributes point to event handlers in MainWindow.xaml.cs. -->
     <Menu Grid.Row="0">
       <MenuItem Header="File">
+        <!-- Disabled placeholders; IsEnabled can be bound to state instead of hard-coded. -->
         <MenuItem Header="Import" IsEnabled="False" />
         <MenuItem Header="Export" IsEnabled="False" />
         <Separator />
@@ -69,6 +87,8 @@
     </Menu>
     <TabControl Grid.Row="1">
       <TabItem Header="List">
+        <!-- ListBox uses the template and style resources defined above. -->
+        <!-- AlternationCount controls how many AlternationIndex values repeat. -->
         <ListBox ItemsSource="{Binding Source={StaticResource ResourceKey=ContactsViewSource}}"
                  ItemTemplate="{StaticResource ContactListItemTemplate}"
                  HorizontalContentAlignment="Stretch"
@@ -76,6 +96,7 @@
                  AlternationCount="2" />
       </TabItem>
       <TabItem Header="Grid">
+        <!-- DataGrid can auto-create columns or use explicit DataGridTextColumn definitions. -->
         <DataGrid ItemsSource="{Binding}" AutoGenerateColumns="True" CanUserAddRows="True" />
       </TabItem>
     </TabControl>
